@@ -103,6 +103,13 @@ class Block(Rectangle):
     def get_coords(self):
         return (self.x, self.y)
 
+    def get_color(self):
+        colorfile = 'rgb.txt'
+        def load_colors():
+            colorList = None
+            with (open_colorlist.file as file_handle):
+
+
     def set_live(self, canvas):
         '''
         Sets the block status to 'live' and draws it on the grid.
@@ -181,7 +188,10 @@ class Board(object):
         self.block_list = {}
 
         ####### YOUR CODE HERE ######
-        raise Exception("__init__ not implemented")
+        for i in range (0,width):
+            for j in range (0,height):
+                x = Block((i,j),
+                self.block_list[i,j] = 
 
 
     def draw_gridline(self, startp, endp):
