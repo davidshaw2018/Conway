@@ -104,20 +104,44 @@ class Block(Rectangle):
         return (self.x, self.y)
 
     def get_color(self):
-        colorfile = 'rgb.txt'
-        def load_colors():
-            colorList = None
-            with (open_colorlist.file as file_handle):
+            # Dictionary mapping color names to RGB values
+    #
+    # colors: { ColorName: (red, green, blue) }
+    colors = defaultdict(lambda: None)
 
+    lines = None
 
-    def set_live(self, canvas):
-        '''
-        Sets the block status to 'live' and draws it on the grid.
-        Be sure to do this on the canvas!
-        '''
-        if self.status=='dead':
-          self.status = 'live'
-          self.draw(canvas)
+    with open(“rgb.txt”) as file_handle:
+        lines = file_handle.readlines()
+
+        # Drop the first line which is not useful
+        lines = [1:]
+
+        # Loop through each line
+        for line in lines:
+            # Split based on spaces
+            line = line.split(" ")
+
+            # Remove all empty strings
+            line = [item for item in line if item != ""]
+
+            red = line[0]
+            green = line[1]
+            blue = line[2]
+
+            name = line[3]
+
+            # Save the color to a dict
+            colors[name] = (red, green, blue)
+
+        def set_live(self, canvas):
+            '''
+            Sets the block status to 'live' and draws it on the grid.
+            Be sure to do this on the canvas!
+            '''
+            if self.status=='dead':
+            self.status = 'live'
+            self.draw(canvas)
 
     def set_dead(self):
         '''
@@ -190,8 +214,8 @@ class Board(object):
         ####### YOUR CODE HERE ######
         for i in range (0,width):
             for j in range (0,height):
-                x = Block((i,j),
-                self.block_list[i,j] = 
+                
+                self.block_list[(i,j)] = 
 
 
     def draw_gridline(self, startp, endp):
