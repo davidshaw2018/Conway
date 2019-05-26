@@ -1,4 +1,9 @@
 from graphics import *
+from string import *
+
+import collections
+import sys
+import os
 import random
 
 ## Written by Sarina Canelake & Kelly Casteel, August 2010
@@ -82,66 +87,76 @@ class Block(Rectangle):
         in terms of the square grid
     '''
 
-    def __init__(self, pos, color):
+    def __init__(self,pos,color):
         '''
         pos: a Point object specifing the (x, y) square of the Block (NOT in pixels!)
         color: a string specifing the color of the block (eg 'blue' or 'purple')
         '''
-        self.x = pos.x
-        self.y = pos.y
+        self.x = pos.getX()
+        self.y = pos.getY()
         
-        p1 = Point(pos.x*BLOCK_SIZE,
-                   pos.y*BLOCK_SIZE)
+        p1 = Point(self.x*BLOCK_SIZE,
+                   self.y*BLOCK_SIZE)
         p2 = Point(p1.x + BLOCK_SIZE, p1.y + BLOCK_SIZE)
 
         Rectangle.__init__(self, p1, p2)
         self.setWidth(BLOCK_OUTLINE_WIDTH)
+        color = self.get_color(str(color))
         self.setFill(color)
         self.status = 'dead'
         self.new_status = 'None'
         
+    
     def get_coords(self):
         return (self.x, self.y)
 
-    def get_color(self):
-            # Dictionary mapping color names to RGB values
-    #
-    # colors: { ColorName: (red, green, blue) }
-    colors = defaultdict(lambda: None)
+    def get_color(self,color_wanted):
+       
+        colors = dict()
 
-    lines = None
+        lines = None
+        MYDIR = os.path.dirname(__file__)
+        color_file = 'rgb.txt'
 
-    with open(“rgb.txt”) as file_handle:
-        lines = file_handle.readlines()
+        with open(os.path.join(MYDIR,color_file)) as file_handle:
+            lines = file_handle.readlines()
 
         # Drop the first line which is not useful
-        lines = [1:]
+        lines = lines[2:len(lines)-2]
 
         # Loop through each line
+
         for line in lines:
-            # Split based on spaces
-            line = line.split(" ")
+            # Split based on spaces
+            line = line.strip("\t\n")
+            line = line.replace('\t'," ",2)
+            line = line.split(" ")
+            line = [item for item in line if item != ""]
+            
+            
+            red = line[0]
+            green = line[1]
+            blue = line[2]
+            
+            
+            name = line[3]
 
-            # Remove all empty strings
-            line = [item for item in line if item != ""]
+            # Save the color to a dict
+            colors[name] = (int(red), int(green), int(blue))
 
-            red = line[0]
-            green = line[1]
-            blue = line[2]
+        if color_wanted == 'random':
+            return colors[random.choice(colors.keys())]
+        else: 
+            return name
 
-            name = line[3]
-
-            # Save the color to a dict
-            colors[name] = (red, green, blue)
-
-        def set_live(self, canvas):
-            '''
-            Sets the block status to 'live' and draws it on the grid.
-            Be sure to do this on the canvas!
-            '''
-            if self.status=='dead':
+    def set_live(self, canvas):
+        '''
+        Sets the block status to 'live' and draws it on the grid.
+        Be sure to do this on the canvas!
+        '''
+        if self.status=='dead':
             self.status = 'live'
-            self.draw(canvas)
+        self.draw(canvas)
 
     def set_dead(self):
         '''
@@ -214,8 +229,8 @@ class Board(object):
         ####### YOUR CODE HERE ######
         for i in range (0,width):
             for j in range (0,height):
-                
-                self.block_list[(i,j)] = 
+                blk = Block(Point(i,j),'snow')
+                self.block_list[(i,j)] = blk
 
 
     def draw_gridline(self, startp, endp):
